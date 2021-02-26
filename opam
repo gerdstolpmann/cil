@@ -23,6 +23,7 @@ remove: [
 ]
 depends: [
   "ocamlfind"
+  "num"
   "ocamlbuild" {build}
   "hevea" {build & doc}
   "hevea" {build & test}

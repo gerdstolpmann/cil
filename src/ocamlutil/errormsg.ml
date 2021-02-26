@@ -207,20 +207,21 @@ let rem_quotes str = String.sub str 1 ((String.length str) - 2)
 
 (* Change \ into / in file names. To avoid complications with escapes *)
 let cleanFileName str = 
-  let str1 = 
-    if str <> "" && String.get str 0 = '"' (* '"' ( *) 
-    then rem_quotes str else str in
-  let l = String.length str1 in
+  let buf =
+    ( if str <> "" && String.get str 0 = '"' (* '"' ( *)
+      then rem_quotes str  else str
+    ) |> Bytes.of_string in
+  let l = Bytes.length buf in
   let rec loop (copyto: int) (i: int) = 
     if i >= l then 
-      String.sub str1 0 copyto
+      Bytes.sub_string buf 0 copyto
      else 
-       let c = String.get str1 i in
+       let c = Bytes.get buf i in
        if c <> '\\' then begin
-          String.set str1 copyto c; loop (copyto + 1) (i + 1)
+          Bytes.set buf copyto c; loop (copyto + 1) (i + 1)
        end else begin
-          String.set str1 copyto '/';
-          if i < l - 2 && String.get str1 (i + 1) = '\\' then
+          Bytes.set buf copyto '/';
+          if i < l - 2 && Bytes.get buf (i + 1) = '\\' then
               loop (copyto + 1) (i + 2)
           else 
               loop (copyto + 1) (i + 1)
